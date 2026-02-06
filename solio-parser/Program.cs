@@ -14,15 +14,37 @@ class Program
         }
 
         string inputFile = args[0];
+        
+        // Check if file exists in current directory, otherwise check InputFiles folder
         if (!File.Exists(inputFile))
         {
-            Console.WriteLine($"File not found: {inputFile}");
-            return;
+            string inputFilesPath = Path.Combine("InputFiles", inputFile);
+            if (File.Exists(inputFilesPath))
+            {
+                inputFile = inputFilesPath;
+            }
+            else
+            {
+                Console.WriteLine($"File not found: {inputFile}");
+                Console.WriteLine($"Also checked: {inputFilesPath}");
+                return;
+            }
         }
 
-        string outputFile = args.Length > 1 
-            ? args[1] 
-            : $"{inputFile}_.csv";
+        string outputFile;
+        if (args.Length > 1)
+        {
+            outputFile = args[1];
+        }
+        else
+        {
+            // Create OutputFiles directory if it doesn't exist
+            Directory.CreateDirectory("OutputFiles");
+            
+            // Get filename without path and replace .txt with .csv
+            string fileName = Path.GetFileNameWithoutExtension(inputFile);
+            outputFile = Path.Combine("OutputFiles", $"{fileName}.csv");
+        }
 
         try
         {

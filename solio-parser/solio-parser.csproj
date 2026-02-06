@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Outputfiles\" />
+      <Folder Include="OutputFiles\" />
     </ItemGroup>
 
 </Project>
