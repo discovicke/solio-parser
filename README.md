@@ -1,21 +1,21 @@
 # Solio Parser
 
-Ett verktyg för att automatiskt konvertera team strength-data från Elevenify till Solio Analytics CSV-format.
+A command-line tool that converts team strength data from Elevenify to Solio Analytics CSV format.
 
-## Syfte
+## Overview
 
-Detta projekt löser problemet med att manuellt mata in team strength-data varje vecka. Istället för att knacka in alla värden för hand från [Elevenify Premier League Data](https://www.elevenify.com/p/premier-league-data) till [Solio Analytics FPL](https://fpl.solioanalytics.com/), kan du nu kopiera tabellen till en fil och automatiskt generera en färdig CSV-fil som kan importeras direkt.
+This parser automates the weekly task of transferring Premier League team strength data from [Elevenify](https://www.elevenify.com/p/premier-league-data) to [Solio Analytics FPL](https://fpl.solioanalytics.com/). Instead of manually entering values, the tool reads raw data and generates a clean CSV file ready for import.
 
-## Hur det fungerar
+## Features
 
-Programmet läser smutsig data från Elevenify (med mycket whitespace, tabbar och extra rader) och:
-- Extraherar lagnamn, offensiva värden (Goals) och defensiva värden (Goals Conceded)
-- Ignorerar mellanliggande rader som innehåller duplicerade "overall"-värden
-- Konverterar lagnamn till 3-bokstavskoder (ARS, LIV, MCI, etc.)
-- Formaterar decimaler till 3 decimaler med punkt som decimalseparator
-- Skapar en ren CSV-fil i exakt det format som Solio behöver
+- Parses messy input with inconsistent whitespace and tabs
+- Extracts offensive and defensive strength values
+- Filters out duplicate separator lines
+- Maps team names to 3-letter codes (ARS, LIV, MCI, etc.)
+- Formats decimals to 3 decimal places
+- Outputs clean CSV in Solio's expected format
 
-## Installation
+## Setup
 
 ```powershell
 git clone <repository-url>
@@ -23,41 +23,28 @@ cd solio-parser
 dotnet build
 ```
 
-## Användning
+## Usage
 
-### Grundläggande användning
+1. Copy the team strength table from Elevenify
+2. Paste into a `.txt` file in the `InputFiles` folder
+3. Run the parser:
 
-1. Kopiera team strength-tabellen från Elevenify
-2. Klistra in i en .txt-fil i `InputFiles`-mappen
-3. Kör programmet:
-
-```powershell
-dotnet run <filnamn.txt>
-```
-
-Exempel:
 ```powershell
 dotnet run elevenify_ts_feb1_26.txt
 ```
 
-Output genereras automatiskt i `OutputFiles`-mappen med samma namn men .csv-ändelse:
+Output is automatically generated in `OutputFiles` with `.csv` extension:
 - Input: `InputFiles/elevenify_ts_feb1_26.txt`
 - Output: `OutputFiles/elevenify_ts_feb1_26.csv`
 
-### Med anpassad output-fil
-
+You can also specify a custom output path:
 ```powershell
-dotnet run <input_fil> <output_fil>
+dotnet run <input_file> <output_file>
 ```
 
-Exempel:
-```powershell
-dotnet run elevenify_ts_feb1_26.txt my_custom_output.csv
-```
+## Input Format
 
-## Input-format
-
-Programmet förväntar sig data från Elevenify i följande format:
+Expected data format from Elevenify:
 ```
 1	Arsenal		1.84	0.81	1.03
 1.031.03
@@ -66,18 +53,18 @@ Programmet förväntar sig data från Elevenify i följande format:
 ...
 ```
 
-Varje lag har:
-- Indexering (1-20)
-- Lagnamn
-- Offensive värde
-- Defensive värde
-- Overall värde
+Each team row contains:
+- Position (1-20)
+- Team name
+- Offensive value
+- Defensive value
+- Overall value
 
-Mellan varje lag finns en rad med duplicerat overall-värde som ignoreras.
+Separator lines with duplicate overall values are automatically filtered out.
 
-## Output-format
+## Output Format
 
-Genererad CSV-fil har exakt det format som Solio förväntar sig:
+Generated CSV format for Solio Analytics:
 ```csv
 Team,Goals,Goals Conceded
 ARS,1.840,0.810
@@ -86,12 +73,12 @@ MCI,1.970,1.120
 ...
 ```
 
-## Lagkoder
+## Team Codes
 
-Programmet konverterar automatiskt lagnamn till 3-bokstavskoder:
+Team names are automatically converted to 3-letter codes:
 
-| Elevenify Namn | Solio Kod |
-|---------------|-----------|
+| Team Name | Code |
+|-----------|------|
 | Arsenal | ARS |
 | Aston Villa | AVL |
 | Bournemouth | BOU |
@@ -107,30 +94,28 @@ Programmet konverterar automatiskt lagnamn till 3-bokstavskoder:
 | Spurs | TOT |
 | West Ham | WHU |
 | Wolves | WOL |
-| ... och fler |
 
-## Projektstruktur
+*Additional teams are supported with fallback conversion.*
+
+## Project Structure
 
 ```
 solio-parser/
-├── InputFiles/          # Lägg dina .txt-filer från Elevenify här
-├── OutputFiles/         # Genererade CSV-filer hamnar här
-├── Program.cs           # Huvudprogrammet
-└── README.md           # Denna fil
+├── InputFiles/          # Place .txt files from Elevenify here
+├── OutputFiles/         # Generated CSV files
+├── Program.cs           # Main parser logic
+└── README.md           
 ```
 
-## Teknisk information
+## Technical Details
 
-- **Språk**: C# (.NET 10.0)
-- **Parsing**: Regex-baserad parsing som hanterar olika whitespace-format
-- **Decimal-formattering**: 3 decimaler, punkt som separator
-- **Felhantering**: Kontrollerar att filer finns och ger tydliga felmeddelanden
+- **Platform**: .NET 10.0 / C#
+- **Parsing**: Regex-based with whitespace handling
+- **Formatting**: 3 decimal places, period separator
 
-## Exempel på körning
+## Example Output
 
-```powershell
-PS V:\RiderProjects\solio-parser\solio-parser> dotnet run elevenify_ts_feb1_26.txt
-
+```
 Successfully parsed 20 teams:
 ARS: Goals=1.840, Goals Conceded=0.810
 AVL: Goals=1.470, Goals Conceded=1.380
@@ -140,6 +125,3 @@ BOU: Goals=1.550, Goals Conceded=1.480
 CSV file written to: OutputFiles\elevenify_ts_feb1_26.csv
 ```
 
-## Licens
-
-Detta är ett personligt verktyg för att underlätta datahantering mellan Elevenify och Solio Analytics.
