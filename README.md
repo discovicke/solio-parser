@@ -1,4 +1,9 @@
 # Solio Parser
+![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-13.0-239120?logo=csharp&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Cross--platform-lightgrey)
+![License](https://img.shields.io/badge/License-Portfolio%20%2F%20Educational-blue)
+
 
 A command-line tool that converts team strength data from Elevenify to Solio Analytics CSV format.
 
